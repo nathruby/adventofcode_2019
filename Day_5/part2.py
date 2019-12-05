@@ -2,7 +2,7 @@ INPUT = [3,225,1,225,6,6,1100,1,238,225,104,0,1101,90,60,224,1001,224,-150,224,4
 def run_computer(codes):
 
     i = 0
-    while i < len(codes): 
+    while i < len(codes):
         op_code = int(str(codes[i])[-2:])
 
         if op_code == 99:
@@ -43,6 +43,39 @@ def run_computer(codes):
             op_code_4(codes, parameter_1)
             i+=2
 
+        elif op_code == 5:
+            
+            parameter_2 = codes[i+2] if instruction_mode_2 == '1' else codes[codes[i+2]]
+            
+            if op_code_5(parameter_1, parameter_2):
+                i = parameter_2
+            else:
+                i+=3
+
+        elif op_code == 6:
+
+            parameter_2 = codes[i+2] if instruction_mode_2 == '1' else codes[codes[i+2]]
+            if op_code_6(parameter_1, parameter_2):
+                i = parameter_2
+            else:
+                i+=3
+
+        elif op_code == 7:
+
+            parameter_2 = codes[i+2] if instruction_mode_2 == '1' else codes[codes[i+2]]
+            parameter_3 = codes[i+3]
+
+            op_code_7(codes, parameter_1, parameter_2, parameter_3)
+            i+=4
+
+        elif op_code == 8:
+
+            parameter_2 = codes[i+2] if instruction_mode_2 == '1' else codes[codes[i+2]]
+            parameter_3 = codes[i+3]
+
+            op_code_8(codes, parameter_1, parameter_2, parameter_3)
+            i+=4
+
 def op_code_1(codes, value_1, value_2, value_3):
 
     codes[value_3] = value_1 + value_2
@@ -53,12 +86,39 @@ def op_code_2(codes, value_1, value_2, value_3):
 
 def op_code_3(codes, value_1):
 
-    codes[value_1] = 1
+    codes[value_1] = 5
 
 def op_code_4(codes, value_1):
 
     print(value_1)
 
+def op_code_5(value_1, value_2):
+
+    if value_1 != 0:
+        return True
+
+    return False
+
+def op_code_6(value_1, value_2):
+
+    if value_1 == 0:
+        return True
+    
+    return False
+
+def op_code_7(codes, value_1, value_2, value_3):
+
+    if value_1 < value_2:
+        codes[value_3] = 1
+    else:
+        codes[value_3] = 0
+
+def op_code_8(codes, value_1, value_2, value_3):
+
+    if value_1 == value_2:
+        codes[value_3] = 1
+    else:
+        codes[value_3] = 0
 
 def op_code_99(codes):
 

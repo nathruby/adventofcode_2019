@@ -11,7 +11,7 @@ def run_computer(codes):
 
         instruction_mode_1 = str(codes[i])[-3:-2] if str(codes[i])[-3:-2] else 0
         instruction_mode_2 = str(codes[i])[-4:-3] if str(codes[i])[-4:-3] else 0
-        instruction_mode_3 = str(codes[i])[-5:-4] if str(codes[i])[-5:-4] else 0
+        #instruction_mode_3 = str(codes[i])[-5:-4] if str(codes[i])[-5:-4] else 0
 
         parameter_1 = codes[i+1] if instruction_mode_1 == '1' else codes[codes[i+1]]
 

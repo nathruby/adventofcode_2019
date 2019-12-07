@@ -20,129 +20,132 @@ class Computer():
         self.pointer = 0
         self.halted = False
         self.inputs = []
-        self.outputs = []
+        self.output = 0
 
-    def run_computer(self, inputs):
+    def run_computer(self):
 
-        i = 0
-        output = 0
-
-        while i < len(self.data):
-            op_code = int(str(self.data[i])[-2:])
+        while self.pointer < len(self.data):
+            op_code = int(str(self.data[self.pointer])[-2:])
 
             if op_code == 99:
                 self.op_code_99()
 
-            instruction_mode_1 = str(self.data[i])[-3:-2] if str(self.data[i])[-3:-2] else 0
-            instruction_mode_2 = str(self.data[i])[-4:-3] if str(self.data[i])[-4:-3] else 0
+            instruction_mode_1 = str(self.data[self.pointer])[-3:-2] if str(self.data[self.pointer])[-3:-2] else 0
+            instruction_mode_2 = str(self.data[self.pointer])[-4:-3] if str(self.data[self.pointer])[-4:-3] else 0
             #instruction_mode_3 = str(codes[i])[-5:-4] if str(codes[i])[-5:-4] else 0
 
-            parameter_1 = self.data[i+1] if instruction_mode_1 == '1' else self.data[self.data[i+1]]
+            parameter_1 = self.data[self.pointer+1] if instruction_mode_1 == '1' else self.data[self.data[self.pointer+1]]
 
             if op_code == 1:
                 
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
-                parameter_3 = self.data[i+3]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
+                parameter_3 = self.data[self.pointer+3]
 
-                self.op_code_1(self.data, parameter_1, parameter_2, parameter_3)
-                i+=4
+                self.op_code_1(parameter_1, parameter_2, parameter_3)
 
             elif op_code == 2:
                     
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
-                parameter_3 = self.data[i+3]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
+                parameter_3 = self.data[self.pointer+3]
 
-                self.op_code_2(self.data, parameter_1, parameter_2, parameter_3)
-                i+=4
+                self.op_code_2(parameter_1, parameter_2, parameter_3)
 
             elif op_code == 3:
 
-                parameter_1 = self.data[i+1]
-                input = inputs.pop(0)
+                parameter_1 = self.data[self.pointer+1]
+                input = self.inputs.pop(0)
 
-                self.op_code_3(self.data, input, parameter_1)
-                i+=2
+                self.op_code_3(input, parameter_1)
 
             elif op_code == 4:
 
-                return self.op_code_4(self.data, parameter_1)
+                return self.op_code_4(parameter_1)
 
             elif op_code == 5:
                 
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
                 
-                i = parameter_2 if self.op_code_5(parameter_1, parameter_2) else i+3
+                self.op_code_5(parameter_1, parameter_2)
 
             elif op_code == 6:
 
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
 
-                i = parameter_2 if self.op_code_6(parameter_1, parameter_2) else i+3
+                self.op_code_6(parameter_1, parameter_2)
 
             elif op_code == 7:
 
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
-                parameter_3 = self.data[i+3]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
+                parameter_3 = self.data[self.pointer+3]
 
-                self.op_code_7(self.data, parameter_1, parameter_2, parameter_3)
-                i+=4
+                self.op_code_7(parameter_1, parameter_2, parameter_3)
 
             elif op_code == 8:
 
-                parameter_2 = self.data[i+2] if instruction_mode_2 == '1' else self.data[self.data[i+2]]
-                parameter_3 = self.data[i+3]
+                parameter_2 = self.data[self.pointer+2] if instruction_mode_2 == '1' else self.data[self.data[self.pointer+2]]
+                parameter_3 = self.data[self.pointer+3]
 
-                self.op_code_8(self.data, parameter_1, parameter_2, parameter_3)
-                i+=4
+                self.op_code_8(parameter_1, parameter_2, parameter_3)
 
         return output
 
-    def op_code_1(self, codes, value_1, value_2, value_3):
+    def op_code_1(self, value_1, value_2, value_3):
 
-        codes[value_3] = value_1 + value_2
+        self.data[value_3] = value_1 + value_2
+        self.pointer += 4
 
-    def op_code_2(self, codes, value_1, value_2, value_3):
+    def op_code_2(self, value_1, value_2, value_3):
 
-        codes[value_3] = value_1 * value_2
+        self.data[value_3] = value_1 * value_2
+        self.pointer += 4
 
-    def op_code_3(self, codes, mode, value_1):
+    def op_code_3(self, mode, value_1):
 
-        codes[value_1] = mode
+        self.data[value_1] = mode
+        self.pointer += 2
 
-    def op_code_4(self, codes, value_1):
+    def op_code_4(self, value_1):
 
+        self.pointer += 2
         return value_1
 
     def op_code_5(self, value_1, value_2):
 
         if value_1 != 0:
-            return True
-
-        return False
+            self.pointer = value_2
+        else:
+            self.pointer += 3
 
     def op_code_6(self, value_1, value_2):
 
         if value_1 == 0:
-            return True
-        
-        return False
+            self.pointer = value_2
+        else:
+            self.pointer += 3
 
-    def op_code_7(self, codes, value_1, value_2, value_3):
+    def op_code_7(self, value_1, value_2, value_3):
 
         if value_1 < value_2:
-            codes[value_3] = 1
+            self.data[value_3] = 1
         else:
-            codes[value_3] = 0
+            self.data[value_3] = 0
+        
+        self.pointer += 4
 
-    def op_code_8(self, codes, value_1, value_2, value_3):
+    def op_code_8(self, value_1, value_2, value_3):
 
         if value_1 == value_2:
-            codes[value_3] = 1
+            self.data[value_3] = 1
         else:
-            codes[value_3] = 0
+            self.data[value_3] = 0
+
+        self.pointer += 4
 
     def op_code_99(self):
         raise HaltException()
+
+    def add_input(self, input):
+        self.inputs.append(input)
 
 if __name__ == "__main__":
 
@@ -156,9 +159,10 @@ if __name__ == "__main__":
 
         for i in range(len(mode_sequence)):
             
-            mode_inputs = [mode_sequence[i], output]
             amp_computer = Computer(file_input)
-            output = amp_computer.run_computer(mode_inputs)
+            amp_computer.add_input(mode_sequence[i])
+            amp_computer.add_input(output)
+            output = amp_computer.run_computer()
 
         if output > max_output:
             best_mode = mode_sequence

@@ -22,6 +22,7 @@ class Computer():
     def run_computer(self):
 
         while self.pointer < len(self.data):
+
             op_code = int(str(self.data[self.pointer])[-2:])
 
             if op_code == 99:
@@ -151,7 +152,35 @@ class Computer():
     def read_output(self):
         return self.outputs.pop(0)
 
-if __name__ == "__main__":
+def part1():
+    
+    file_input = get_input()
+    best_mode = ()
+    max_output = -99999999
+
+    for mode_sequence in itertools.permutations(range(5)):
+            
+        output = 0
+
+        #for each amp, reset input and feed output to be new amp's input
+        #beginning with a signal input of 0
+        for amp in range(len(mode_sequence)):
+
+            system_computer = Computer(file_input)
+            system_computer.add_input(mode_sequence[amp])
+            system_computer.add_input(output)
+            system_computer.run_computer()
+
+            output = system_computer.read_output()
+
+        if output > max_output:
+            best_mode = mode_sequence
+            max_output = output
+
+
+    print("Part 1:", max_output, best_mode)
+
+def part2():
 
     file_input = get_input()
     best_mode = ()
@@ -187,4 +216,8 @@ if __name__ == "__main__":
             max_output = output
 
 
-    print(max_output, best_mode)
+    print("Part 2:", max_output, best_mode)
+
+if __name__ == "__main__":
+    part1()
+    part2()

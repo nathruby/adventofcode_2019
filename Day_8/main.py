@@ -56,7 +56,7 @@ def some_function(input):
     print(number_of_ones * number_of_twos)
     
     #Intialize image
-    layer_image = [ row for row in layers[0]]
+    image = [ row for row in layers[0]]
 
     for layer in layers:
 
@@ -64,15 +64,18 @@ def some_function(input):
 
             for column in range(WIDTH):
 
-                if layer_image[row][column] > layer[row][column] and layer_image[row][column] == 2:
-                    layer_image[row][column] = layer[row][column]
+                if image[row][column] > layer[row][column] and image[row][column] == 2:
+                    image[row][column] = layer[row][column]
 
-    for row in layer_image:
-        print(row)            
-    ################################################
+    print_image(image)           
 
 
+def print_image(image):
+    ascii_map = [' ', '*']
 
+    for row in image:
+        print(''.join([ascii_map[column] for column in row]))
+        
 if __name__ == "__main__":
 
     file_input = get_input()

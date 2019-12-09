@@ -1,3 +1,5 @@
+import time
+
 HEIGHT = 6
 WIDTH = 25
 
@@ -10,7 +12,7 @@ def get_input():
     
     return input
 
-def some_function(input):
+def find_image(input):
     
     input_position = 0
     min_zero_count = 999999
@@ -64,19 +66,20 @@ def some_function(input):
 
             for column in range(WIDTH):
 
-                if image[row][column] > layer[row][column] and image[row][column] == 2:
+                #if bit in layer of image is still transparent, replace it with a color
+                if image[row][column] == 2:
                     image[row][column] = layer[row][column]
 
     print_image(image)           
 
 
 def print_image(image):
-    ascii_map = [' ', '*']
+    ascii_map = [' ', '#']
 
     for row in image:
         print(''.join([ascii_map[column] for column in row]))
         
 if __name__ == "__main__":
-
+    
     file_input = get_input()
-    some_function(file_input)
+    find_image(file_input)

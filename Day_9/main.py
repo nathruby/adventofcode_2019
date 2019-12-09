@@ -50,246 +50,88 @@ class Computer():
 
     def run_computer(self):
 
-        while self.data[self.pointer] != HALT:
+        while not self.halted:
             
-            op_code = self.data[self.pointer] % 100
-            modes = self.data[self.pointer] // 100
+            instruction = self.data[self.pointer]
+            op_code = instruction % 100
+            modes = instruction // 100
 
             arg_kinds = OPS[op_code]
-            a, b, c, d = self.get_args(arg_kinds, modes)
+            value_1, value_2, value_3, value_4 = self.get_args(arg_kinds, modes)
             self.pointer += 1 + len(arg_kinds)
-            print(a,b,c,d)
-            instruction_mode_1 = modes % 10
-            instruction_mode_2 = modes // 10
-            #instruction_mode_3 = modes // 100
 
-            if op_code == 99:
+            if op_code == HALT:
+                self.halted = True
                 self.op_code_99()
-                return
-                  
-            if instruction_mode_1 == 0:
-                
-                self.resize_memory( self.data[self.pointer+1])
-                parameter_1 = self.data[self.data[self.pointer+1]]
-
-            elif instruction_mode_1 == 1:
-                
-                self.resize_memory( self.pointer+1)
-                parameter_1 = self.data[self.pointer+1]
-
-            elif instruction_mode_1 == 2:
-
-                self.resize_memory( self.relative_base + self.data[self.pointer+1])
-                parameter_1 = self.data[self.relative_base + self.data[self.pointer+1]]
 
             if op_code == ADD:
-
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-
-                self.op_code_1(parameter_1, parameter_2, parameter_3)
+                self.op_code_1(value_1, value_2, value_3)
 
             elif op_code == MULT:
-
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-
-                self.op_code_2(parameter_1, parameter_2, parameter_3)
+                self.op_code_2(value_1, value_2, value_3)
 
             elif op_code == IN:
-
-                #if no more inputs, move onto next amp
-                if self.inputs:
-                    parameter_1 = self.data[self.pointer+1]
-                    self.op_code_3(parameter_1)
-                else:
-                    return
+                self.op_code_3(value_1)
 
             elif op_code == OUT:
+                self.op_code_4(value_1)
 
-                self.op_code_4(parameter_1)
-
-            elif op_code == JUMP_IF_NOT_ZERO:
-                
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-                
-                self.op_code_5(parameter_1, parameter_2)
+            elif op_code == JUMP_IF_NOT_ZERO:                
+                self.op_code_5(value_1, value_2)
 
             elif op_code == JUMP_IF_ZERO:
-
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-
-                self.op_code_6(parameter_1, parameter_2)
+                self.op_code_6(value_1, value_2)
 
             elif op_code == LESS_THAN:
-
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-
-                parameter_3 = self.data[self.pointer+3]
-
-                self.op_code_7(parameter_1, parameter_2, parameter_3)
+                self.op_code_7(value_1, value_2, value_3)
 
             elif op_code == EQUALS:
-
-                parameter_2 = None
-                parameter_3 = self.data[self.pointer+3]
-
-                if instruction_mode_2 == 0:
-
-                    self.resize_memory( self.data[self.pointer+2])
-                    parameter_2 = self.data[self.data[self.pointer+2]]
-
-                elif instruction_mode_2 == 1:
-
-                    self.resize_memory( self.pointer+2)
-                    parameter_2 = self.data[self.pointer+2]
-
-                elif instruction_mode_2 == 2:
-
-                    self.resize_memory( self.relative_base + self.data[self.pointer+2])
-                    parameter_1 = self.data[self.relative_base + self.data[self.pointer+2]]
-
-                parameter_3 = self.data[self.pointer+3]
-
-                self.op_code_8(parameter_1, parameter_2, parameter_3)
+                self.op_code_8(value_1, value_2, value_3)
 
             elif op_code == ADD_RELATIVE_BASE:
-                self.op_code_9(parameter_1)
+                self.op_code_9(value_1)
 
     def op_code_1(self, value_1, value_2, value_3):
-        self.resize_memory(value_3)
         self.data[value_3] = value_1 + value_2
-        self.pointer += 4
 
     def op_code_2(self, value_1, value_2, value_3):
-        self.resize_memory(value_3)
         self.data[value_3] = value_1 * value_2
-        self.pointer += 4
 
     def op_code_3(self, value_1):
 
         self.data[value_1] = self.inputs.pop(0)
-        self.pointer += 2
 
     def op_code_4(self, value_1):
 
         self.add_output(value_1)
-        self.pointer += 2
 
     def op_code_5(self, value_1, value_2):
 
         if value_1 != 0:
             self.pointer = value_2
-        else:
-            self.pointer += 3
 
     def op_code_6(self, value_1, value_2):
 
         if value_1 == 0:
             self.pointer = value_2
-        else:
-            self.pointer += 3
 
     def op_code_7(self, value_1, value_2, value_3):
-        self.resize_memory(value_3)
+
         if value_1 < value_2:
             self.data[value_3] = 1
         else:
             self.data[value_3] = 0
-        
-        self.pointer += 4
 
     def op_code_8(self, value_1, value_2, value_3):
-        self.resize_memory(value_3)
+
         if value_1 == value_2:
             self.data[value_3] = 1
         else:
             self.data[value_3] = 0
 
-        self.pointer += 4
-
     def op_code_9(self, value_1):
 
         self.relative_base += value_1
-        self.pointer += 2
 
     def op_code_99(self):
         self.halted = True
@@ -346,7 +188,14 @@ if __name__ == "__main__":
 
     file_input = get_input()
 
-    boost_computer = Computer(file_input)
-    boost_computer.run_computer()
+    boost_computer_1 = Computer(file_input)
+    boost_computer_1.add_input(1)
+    boost_computer_1.run_computer()
 
-    print(boost_computer.read_output())
+    print("Part 1:", boost_computer_1.read_output())
+
+    boost_computer_2 = Computer(file_input)
+    boost_computer_2.add_input(2)
+    boost_computer_2.run_computer()
+
+    print("Part 2:", boost_computer_2.read_output())
